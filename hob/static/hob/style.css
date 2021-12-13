@@ -1,0 +1,17 @@
+#footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;   
+  text-align: center;
+}
+
+#profile-hr {
+  border: 3px solid black;
+}
+
+#friend-sep {
+  border: 1px;
+}
+body{
+  position: relative;
+}

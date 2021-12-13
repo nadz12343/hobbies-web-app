@@ -1,0 +1,71 @@
+{% extends "hob/base.html" %}
+
+{% block content %}
+    <div id="app">
+        <div class="jumbotron" style="background-color: rgb(240, 240, 240); padding: 3%;margin-top: 5%;">
+            <h1 class="display-4">Hello, {{ user.username }}!</h1>
+            <p>Currently logged in: {{ user.email }}</p>
+            <p class="lead">This is a simple hobbies web app, where users can find others with similar hobbies and become friends with them.</p>
+            <hr class="my-4">
+            <p>The web app was built using Django, Vue and Bootstrap.</p>
+            <p class="lead">
+                <a class="btn btn-dark btn-lg" href="{% url 'profile' %}" role="button">Go to Profile</a>
+            </p>
+        </div>
+
+        <br><hr>
+
+        <div class="latest-hobby" style="padding: 1%;">
+            <h3 class="display-6 mt-5">Latest Hobby Added</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Hobby</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            [[ name ]]
+                        </td>
+                        <td>
+                            [[ description ]]
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <a class="btn btn-dark btn-sm" style="margin-right: 1%;" href="{% url 'hobbies' %}" role="button">View More Hobbies</a>
+            <a class="btn btn-dark btn-sm" href="{% url 'similar' %}" role="button">View Similar Hobbies With Other Users</a>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                name: '',
+                description: '',
+            }
+        },
+        async created() {
+            let response = await fetch("{% url 'api_hobbies' %}");
+            if (response.ok) {
+                let data = await response.json();
+                this.name = data.hobbies[data.hobbies.length-1].name;
+                this.description = data.hobbies[data.hobbies.length-1].description;
+                console.log(data);
+            }
+            else {
+                alert("Failed to load hobbies");
+            }
+        },
+    })
+
+    myApp.mount('#app')
+</script>
+{% endblock %}

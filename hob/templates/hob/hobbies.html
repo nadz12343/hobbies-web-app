@@ -1,0 +1,114 @@
+{% extends "hob/base.html" %}
+
+{% block content %}
+    <div id="app">
+        {% csrf_token %}
+        <h1 class="display-2 mt-5">Hobbies</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Hobby</th>
+                        <th scope="col">Description</th>
+                        <th width="100" scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="hobby in hobbies">
+                        <td>
+                            [[ hobby.hob.name ]]
+                        </td>
+                        <td>
+                            [[ hobby.hob.description ]]
+                            [[hobby.is_added]]
+                        </td>
+                        <td>
+                            <div v-if="hobby.is_added">
+                                <div class="alert alert-secondary" role="alert">
+                                    Already added
+                                </div>
+                            </div>
+                            <div v-else>
+                                <button type="button" class="btn btn-dark ml-2" @click="addHobbyToMyList(hobby)" title="add hobby">At to my Hobbies</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><input type="text" class="form-control" placeholder="Hobby" v-model="name" required></th>
+                        <th><input type="text" class="form-control" placeholder="Description" v-model="description"></th>
+                        <td>
+                            <button type="button" class="btn-sm btn-success ml-2" @click="addHobby()" title="add hobby">Add</button>
+                        </td>
+                    </tr>
+    
+                </tbody>
+            </table>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                hobbies: [],
+                name: '',
+                description: '',
+                similar_hobbies: [],
+            }
+        },
+        async created() {
+            let response = await fetch("{% url 'api_hobbies' %}");
+            if (response.ok) {
+                let data = await response.json();
+                this.hobbies = data.hobbies;
+                console.log(data)
+            }
+            else {
+                alert("Failed to load hobbies");
+            }
+        },
+        methods: {
+            async addHobby() {
+                const response = await fetch("{% url 'api_addHobby' %}", {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                    body: JSON.stringify({
+                        'name': this.name,
+                        'description': this.description,
+                    })
+                })
+                let response2 = await fetch("{% url 'api_hobbies' %}");
+                if (response.ok) {
+                    let data = await response2.json();
+                    this.hobbies = data.hobbies;
+                }
+            },
+            async addHobbyToMyList(h){
+                try {
+                    const res = await fetch("{% url 'hobby-list' %}", { 
+                        method: 'PUT', 
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                        },
+                        body: JSON.stringify({
+                            'id': h.hob.id,
+                        })
+                    })
+                    h.is_added=true
+                    alert("View the profile page to see your hobbies!")
+                }
+                catch(error) {
+                    alert("ERROR: record was not deleted!")
+                }
+            }
+        }
+    })
+
+    myApp.mount('#app')
+</script>
+{% endblock %}

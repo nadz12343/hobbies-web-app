@@ -1,0 +1,172 @@
+{% extends "hob/base.html" %}
+
+{% block content %}
+
+<style>
+    #test {
+        display: inline-block;
+    }
+</style>
+
+    <div id="similar-hobbies">
+
+        {% csrf_token %}
+
+        <h5 class="display-2 mt-5">Similar Hobbies</h5>
+
+        <div v-if="similar_hobbies == []" class="alert alert-primary" role="alert">No users with similar hobbies :(</div>
+
+        <hr>
+        <p>On this page you will be able to view others uers which have similar hobbies to you. The list will show the users with the most similar
+            hobbies to you. You can also send them a friend request to become friends with them.
+        </p>
+        <hr>
+
+        <p><strong>Filter options:</strong></p>
+        <table>
+            <tr>
+                <td>
+                    Age:
+                    <select class="form-select" aria-label="Default select example" v-model="age">
+                        <option value="1">0-20</option>
+                        <option value="2">20-30</option>
+                        <option value="3">30-50</option>
+                        <option value="4">50+</option>
+                    </select>
+                </td>
+                <td>
+                    City:
+                    <select class="form-select" aria-label="Default select example" v-model="city">
+                        <option value="London">London</option>
+                        <option value="Manchester">Manchester</option>
+                        <option value="Liverpool">Liverpool</option>
+                        <option value="Glasgow">Glasgow</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <button type="button" class="btn btn-dark mr-4" @click="filterHobbies()">Apply filters</button>
+        <button type="button" class="btn btn-dark " @click="resetList()">Rest filters</button>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Similar Hobbies</th>
+                    <th scope="col" style="width: 170px;">Total of similar hobbies</th>
+                    <th scope="col" style="width: 130px;">Add as friend</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="user in similar_hobbies">
+                    <td>
+                        [[ user.user.username ]]
+                    </td>
+                    <td>
+                        <ul class="list-group" v-for="u in user.hobbies">
+                            <li class="list-group-item">[[ u.name ]]</li>
+                        </ul>
+                    </td>
+                    <td>
+                        [[ user.total ]]
+                    </td>
+                    <td>
+                        <div v-if="user.are_friends">
+                            <div class="alert alert-success" role="alert">
+                                You are friends
+                            </div>
+                        </div>
+                        <div v-else-if="user.sent_req">
+                            <div class="alert alert-primary" role="alert">
+                                Friend request pending..
+                            </div>
+                        </div>
+                        <div v-else>
+                            <button type="button" class="btn btn-dark" type="button" @click="sendFriendRequest(user)">Send invite</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+
+    let myApp = Vue.createApp({
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                similar_hobbies: [],
+                age: '0',
+                city: '',
+            }
+        },
+        async created() {
+            let response1 = await fetch("{% url 'similar-hobbies' %}");
+            if (response1.ok) {
+                let data1 = await response1.json();
+                this.similar_hobbies = data1.users;
+                console.log(data1)
+            }
+            else {
+                alert("Failed to load hobbies");
+            }
+        },
+        methods: {
+            async filterHobbies() {
+                try {
+                    const res = await fetch("{% url 'similar-hobbies' %}", { 
+                        method: 'PUT', 
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                        },
+                        body: JSON.stringify({
+                            age: this.age,
+                            city: this.city,
+                        })
+                    })
+                    const data = await res.json()
+                    console.log(data)
+                    this.similar_hobbies = data.users;
+                }
+                catch(error) {
+                    alert("ERROR: record was not deleted!")
+                }
+            },
+            async resetList() {
+                let response1 = await fetch("{% url 'similar-hobbies' %}");
+                if (response1.ok) {
+                    let data1 = await response1.json();
+                    this.similar_hobbies = data1.users;
+                    console.log(data1)
+                }
+                else {
+                    alert("Failed to load hobbies");
+                }
+                this.age=""
+                this.city=""
+            },
+            async sendFriendRequest(u) {
+                try {
+                    const res = await fetch(u.user.api, { 
+                        method: 'POST', 
+                        headers: {
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                        },
+                    })
+                }
+                catch(error) {
+                    alert("ERROR: record was not deleted!")
+                }
+                u.sent_req=true
+            }
+        }
+    })
+
+    myApp.mount('#similar-hobbies')
+</script>
+{% endblock %}

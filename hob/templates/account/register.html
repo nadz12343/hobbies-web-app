@@ -1,0 +1,28 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+
+    <br><h3>Register</h3><hr>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {% for field in reg_form %}
+            <p>
+                {{ field.label_tag }}
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </p>
+        {% endfor %}
+
+        <button type="submit">Register</button>  | <a href="{% url 'login' %}">Login!
+    <form>  
+{% endblock content %}
