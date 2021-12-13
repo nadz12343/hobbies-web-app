@@ -1,0 +1,27 @@
+body {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    background-color: #E0E0E0;
+}
+  
+#login-form {
+    background-color: white;
+    margin-top: 75px;
+    border-radius: 25px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#login-form form {
+    padding: 20px;
+    
+}
+
+#footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;   
+    text-align: center;
+    margin-top: 75px;
+}
