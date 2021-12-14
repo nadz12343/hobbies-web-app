@@ -81,6 +81,8 @@ class UserAccount(AbstractUser):
             'id': self.id,
             'email': self.email,
             'username': self.username,
+            'city': self.city,
+            'dob': self.date_of_birth,
             'api': reverse('send-request', kwargs={'id': self.id}),
         }
 
@@ -111,5 +113,6 @@ class FriendRequest(models.Model):
 
     def requests_to_dictionary(self):
         return {
-            'from': self.from_user.friends_dictionary()
+            'from': self.from_user.friends_dictionary(),
+            'sent': self.date_sent,
         }

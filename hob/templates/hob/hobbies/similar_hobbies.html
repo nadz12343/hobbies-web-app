@@ -54,6 +54,8 @@
                 <tr>
                     <th scope="col">Username</th>
                     <th scope="col">Similar Hobbies</th>
+                    <th scope="col">DoB</th>
+                    <th scope="col">City</th>
                     <th scope="col" style="width: 170px;">Total of similar hobbies</th>
                     <th scope="col" style="width: 130px;">Add as friend</th>
                 </tr>
@@ -67,6 +69,12 @@
                         <ul class="list-group" v-for="u in user.hobbies">
                             <li class="list-group-item">[[ u.name ]]</li>
                         </ul>
+                    </td>
+                    <td>
+                        [[ user.user.dob]]
+                    </td>
+                    <td>
+                        [[ user.user.city ]]
                     </td>
                     <td>
                         [[ user.total ]]

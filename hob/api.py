@@ -150,6 +150,9 @@ def PUT_UserAccount(request):
         user.first_name=PUT['firstname']
         user.last_name=PUT['lastname']
         user.username=PUT['username']
+        user.city=PUT['city']
+        user.email=PUT['email']
+        user.date_of_birth=PUT['dob']
         user.save()
         return JsonResponse({})
 
@@ -227,3 +230,10 @@ def remove_hobby_from_list(request, id):
         u.hobbies.remove(hob)
         return JsonResponse({})
 
+def get_latest_hobbies(request):
+    return JsonResponse({
+        'hobbies': [
+            hobby.to_dict()
+            for hobby in Hobby.objects.all()
+        ]
+    })

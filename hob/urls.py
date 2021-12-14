@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from hob.views import register, index, logoutUser, loginUser, profile, hobbies, similar_hobbies
-from .api import GET_UserAccount, PUT_UserAccount, hobbies_api, addHobby_api, add_hobby_user_list, GET_all_UserAccount, send_friend_request, GET_friend_requests, manage_friend_request, remove_hobby_from_list
+from .api import GET_UserAccount, PUT_UserAccount, hobbies_api, addHobby_api, add_hobby_user_list, GET_all_UserAccount, send_friend_request, GET_friend_requests, manage_friend_request, remove_hobby_from_list, get_latest_hobbies
 
 urlpatterns = [
     # Account 
@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/get-requests/', GET_friend_requests, name="get-requests"),
     path('api/manage-request/<int:id>', manage_friend_request, name="manage-request"),
     path('api/remove-hobby/<int:id>', remove_hobby_from_list, name="remove-user-hobby"),
+    path('api/latest-hobbies', get_latest_hobbies, name="latest-hobbies"),
 
     # Webpages
     path('', index, name="home"),

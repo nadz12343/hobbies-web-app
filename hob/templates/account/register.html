@@ -1,10 +1,25 @@
 {% extends "account/base.html" %}
 
+
+
 {% block content %}
 
-    <br><h3>Register</h3><hr>
+<style>
+    #register-form {
+        background-color: white;
+        width: 500px;
+        margin-top: 75px;
+        border-radius: 25px;
+        text-align: center;
+        box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
 
-    <form method="post">
+    #register-form form {
+        padding: 30px;
+    }
+</style>
+
+    <!-- <form method="post">
 
         {% csrf_token %}
 
@@ -24,5 +39,46 @@
         {% endfor %}
 
         <button type="submit">Register</button>  | <a href="{% url 'login' %}">Login!
-    <form>  
+    <form>   -->
+        <div class="text-center" id="register-form">
+
+            <h1 class="display-3 mb-3font-weight-normal">Register account</h1>
+            <form class="form-signup" method="post">
+
+                {% csrf_token %}
+    
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="text" name="username" id="inputUsername" class="form-control mt-1"required autofocus>
+    
+                <label for="inputEmail" class="sr-only">Email</label>
+                <input type="email" name="email" id="inputEmail" class="form-control mt-1"required autofocus>
+    
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" name="password1" id="inputPassword" class="form-control mt-1" required>
+    
+                <label for="inputPassword2" class="sr-only">Confirm Password</label>
+                <input type="password" name="password2" id="inputPassword2" class="form-control mt-1" required>
+    
+                <label for="inputFirstname" class="sr-only">Firstname</label>
+                <input type="text" name="first_name" id="inputFirstname" class="form-control mt-1"required>
+    
+                <label for="inputLastname" class="sr-only">Lastname</label>
+                <input type="text" name="last_name" id="inputLastname" class="form-control mt-1"required>
+    
+                <label for="inputDOB" class="sr-only">Date of birth</label>
+                <input type="date" name="date_of_birth" id="inputDOB" class="form-control mt-1"required>
+                
+                <label for="inputCity" class="sr-only">City</label>
+                <select class="form-select" name="city" id="cities">
+                    <option value="London">London</option>
+                    <option value="Manchester">Manchester</option>
+                    <option value="Liverpool">Liverpool</option>
+                    <option value="Glasgow">Glasgow</option>
+                </select>
+    
+                <button class="btn btn-dark btn-lg btn-block mt-5" type="submit">Sign up</button>
+                <p class="mt-3"><a href="{% url 'login' %}">Already have an account?</a></p>
+            </form>
+        </div>
+
 {% endblock content %}

@@ -3,7 +3,7 @@
 {% block content %}
     <div id="app">
         <div class="jumbotron" style="background-color: rgb(240, 240, 240); padding: 3%;margin-top: 5%;">
-            <h1 class="display-4">Hello, {{ user.username }}!</h1>
+            <h1 class="display-4">Hello, {{ user.first_name }}!</h1>
             <p>Currently logged in: {{ user.email }}</p>
             <p class="lead">This is a simple hobbies web app, where users can find others with similar hobbies and become friends with them.</p>
             <hr class="my-4">
@@ -16,7 +16,7 @@
         <br><hr>
 
         <div class="latest-hobby" style="padding: 1%;">
-            <h3 class="display-6 mt-5">Latest Hobby Added</h3>
+            <h3 class="display-6 mt-5">Latest Hobbies Added</h3>
             <table class="table">
                 <thead>
                     <tr>
@@ -50,15 +50,15 @@
             return {
                 name: '',
                 description: '',
+                hobbies: [],
             }
         },
         async created() {
-            let response = await fetch("{% url 'api_hobbies' %}");
+            let response = await fetch("{% url 'latest-hobbies' %}");
             if (response.ok) {
                 let data = await response.json();
                 this.name = data.hobbies[data.hobbies.length-1].name;
                 this.description = data.hobbies[data.hobbies.length-1].description;
-                console.log(data);
             }
             else {
                 alert("Failed to load hobbies");
