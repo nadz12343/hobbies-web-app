@@ -7,6 +7,11 @@ class DateInput(forms.DateInput):
     input_type='date'
 
 class RegistrationForm(UserCreationForm):
+
+    '''
+    Custom registration form for signing up new users.
+    '''
+
     email = forms.EmailField(max_length=100, help_text='Valid email address needed!')
     date_of_birth = forms.DateField(widget=DateInput)
     city = forms.CharField(max_length=50)
@@ -16,6 +21,11 @@ class RegistrationForm(UserCreationForm):
         fields = ("username", "email", "password1", "password2", "first_name", "last_name", "date_of_birth", "city")
 
 class AuthenticationForm(forms.ModelForm):
+
+    '''
+    Custom login form for signing up new users.
+    '''
+
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
     class Meta:

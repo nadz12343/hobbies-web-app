@@ -229,8 +229,7 @@
                 const res1 = await fetch("{% url 'get-user-details' %}")
                 const data = await res1.json()
                 this.user = data.user
-                //this.friend_requests = data.requests
-                this.friend_requests = this.friend_requests.filter(r => r.id != req.id)
+                this.friend_requests = data.requests
             },
             async removeHobbyFromList(h) {
                 try {

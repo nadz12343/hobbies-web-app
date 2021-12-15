@@ -7,17 +7,25 @@ from .models import UserAccount, Hobby, FriendRequest
 
 def GET_all_UserAccount(request):
 
+    """
+    Request: GET. Fetches UserAccount objects. Those objects are
+    comapared against Hobbies the users have with the uer logged in
+    and are sorted accordingly.
+    """
+
+    # Checks if method is PUT
+    # This is to ensure if the request given will require filtering
     if request.method=="PUT":
         PUT = json.loads(request.body)
 
         age=PUT['age']
-        print(age)
         date_format = "%Y-%d-%m"
         todays_date=datetime.strptime(date.today().strftime(date_format), date_format)
 
         from_date=todays_date-timedelta(days=100*365.2425)
         to_date=todays_date
 
+        # Checks filtering option selected
         if age=='1':
             from_date=todays_date-timedelta(days=20*365.2425)
             to_date=todays_date
@@ -32,11 +40,7 @@ def GET_all_UserAccount(request):
             from_date=todays_date-timedelta(days=100*365.2425)
             to_date=todays_date-timedelta(days=50*365.2425)
 
-        
-        # print(datetime.strptime(date.today().strftime(date_format), date_format))
-        # dat1=datetime.strptime(date.today().strftime(date_format), date_format)
-        # dat=dat1-timedelta(days=365.2425)
-
+        # Check if city field is empty thus not requiring a city filter
         u=UserAccount.objects.exclude(id=request.user.id).filter(city=PUT['city'])
         if PUT['city']=="":
             u=UserAccount.objects.exclude(id=request.user.id)
@@ -57,32 +61,29 @@ def GET_all_UserAccount(request):
     for n in current_user.get("hobbies"):
         list_u_hob.append(n.get("id"))
     print(list_u_hob)
-    #print(current_user.get("hobbies")[1].get("id"))
 
     similar_hobbies = {}
     
+    # Gets all user with similar hobbies into a list
     for n in all_users:
         x = n.get("hobbies")
         current_hobbies=[]
         compared_user=[]
         if(len(x)>=1):
             for k in x:
-                #print(k.get("id"))
                 current_hobbies.append(k.get("id"))
         compared_user = list(set(list_u_hob).intersection(current_hobbies))
         if len(compared_user)>=1:
             similar_hobbies[n.get("id")] = compared_user 
     
+    # Sorts the list according to the length of the list cotaining hobby IDs
     similar_hobbies = sorted(similar_hobbies.items(), key= lambda x: len(x[1]), reverse=True)
-
-    print(similar_hobbies)
-    #print(all_users)
 
     final_users = {}
 
+    # Creates a dictionary containing the users with similar hobbies
     for index, user in enumerate(similar_hobbies):
         u = get_object_or_404(UserAccount, id=user[0])
-        #print(u)
 
         hobby_dict = {}
         for index1, hobby in enumerate(user[1]):
@@ -98,14 +99,8 @@ def GET_all_UserAccount(request):
 
         try:
             UserAccount.objects.get(id=request.user.id).friends.get(id=u.id)
-            print("they are friends")
         except:
             is_friend = False
-            print("they are not friends")
-        
-        print("Request sent: "+str(req_sent))
-
-        
 
         final_users[index] = {
             'user': u.simple_dict(),
@@ -115,16 +110,18 @@ def GET_all_UserAccount(request):
             'are_friends': is_friend,
         }
 
-    print(final_users)
-
     return JsonResponse({
         'users': final_users,
     })
 
 def GET_UserAccount(request):
-    #GET_all_UserAccount(request)
+
+    '''
+    Request: GET. Fetches UserAccount objects for the currently logged in
+    user. Also their friend requests are fetched.
+    '''
+
     user = get_object_or_404(UserAccount, id=request.user.id)
-    #request = FriendRequest.objects.filter(to_user=get_object_or_404(UserAccount, id=request.user.id))
     return JsonResponse({
         'user': [
             user.to_dictionary_full_info(),
@@ -136,6 +133,11 @@ def GET_UserAccount(request):
     })
 
 def add_hobby_user_list(request):
+
+    '''
+    Request: PUT. Ne hobby is added to the Hobbies database.
+    '''
+
     if request.method == "PUT":
         PUT = json.loads(request.body)
         u = get_object_or_404(UserAccount, id=request.user.id)
@@ -144,6 +146,11 @@ def add_hobby_user_list(request):
         return JsonResponse({})
 
 def PUT_UserAccount(request):
+
+    '''
+    Request: PUT. New User details are udpated and saved into the database.
+    '''
+
     if request.method == "PUT":
         user = get_object_or_404(UserAccount, id=request.user.id) 
         PUT = json.loads(request.body)
@@ -156,17 +163,13 @@ def PUT_UserAccount(request):
         user.save()
         return JsonResponse({})
 
-def get_uesr_age(user):
-    date_format = "%Y-%d-%m"
-    today = date.today()
-    a = datetime.strptime(str(user.date_of_birth), date_format)
-    b = datetime.strptime(today.strftime(date_format), date_format)
-    print(a)
-    delta = b - a
-    print(delta.days/365.2425)
-    return delta.days/365.2425
-
 def hobbies_api(request):
+
+    '''
+    Request: GET. Fetches all hobbies currently stored in the database.
+    Method also adds a field to judge if the user has already added the hobby
+    or not.
+    '''
 
     allHobbies = [
         hobby.to_dict()
@@ -185,6 +188,11 @@ def hobbies_api(request):
     })
 
 def addHobby_api(request):
+
+    '''
+    Request: POST. Adds new row entry to the Hobby models.
+    '''
+
     POST = json.loads(request.body)
     hobby = Hobby(
         name=POST['name'],
@@ -194,13 +202,22 @@ def addHobby_api(request):
     return JsonResponse({})
 
 def send_friend_request(request, id):
+
+    '''
+    Request: POST. Adds new friend request row in FrienRequest model.
+    '''
+
     if request.method=="POST":
         friend_request = FriendRequest(from_user=get_object_or_404(UserAccount, id=request.user.id), to_user=get_object_or_404(UserAccount, id=id))
         friend_request.save()
         return JsonResponse({})
 
 def GET_friend_requests(request):
-    #request = FriendRequest.objects.filter(to_user=get_object_or_404(UserAccount, id=request.user.id))
+    
+    '''
+    Request: GET. Fetches all friend requests for a given user.
+    '''
+
     return JsonResponse({
         'requests': [
             request.requests_to_dictionary()
@@ -209,6 +226,11 @@ def GET_friend_requests(request):
     })
 
 def manage_friend_request(request, id):
+
+    '''
+    Request: DELETE. Deletes row entry for friend request.
+    '''
+
     if request.method=="DELETE":
         DELETE=json.loads(request.body)
         action=DELETE['action']
@@ -224,6 +246,11 @@ def manage_friend_request(request, id):
         return JsonResponse({})
 
 def remove_hobby_from_list(request, id):
+
+    '''
+    Request: DELETE. Fetches all friend requests for a given user.
+    '''
+
     if request.method=="DELETE":
         u=UserAccount.objects.get(id=request.user.id)
         hob=u.hobbies.get(id=id)
@@ -231,6 +258,11 @@ def remove_hobby_from_list(request, id):
         return JsonResponse({})
 
 def get_latest_hobbies(request):
+
+    '''
+    Request: GET. Fetches all hobbies.
+    '''
+
     return JsonResponse({
         'hobbies': [
             hobby.to_dict()

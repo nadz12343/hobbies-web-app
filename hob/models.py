@@ -5,6 +5,11 @@ from datetime import date
 
 
 class Hobby(models.Model):
+
+    """
+    A Hobby contains the name of the hobby and its description.
+    """
+
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=500, null=True, blank=True)
 
@@ -25,6 +30,13 @@ class Hobby(models.Model):
         }
 
 class UserAccount(AbstractUser):
+
+    """
+    UserAccount model stores all the information regarding each 
+    individual user on the database. There are two many to many relations
+    between other users and hobbies.
+    """
+
     email = models.EmailField(verbose_name="email", max_length=100, unique=True)
     city = models.CharField(max_length=100, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -104,6 +116,12 @@ class UserAccount(AbstractUser):
         }
 
 class FriendRequest(models.Model):
+
+    """
+    FriendRequest model is a conntecting table that connects
+    two users together through a friend request.
+    """
+
     from_user = models.ForeignKey(UserAccount, related_name="sender", on_delete=models.CASCADE)
     to_user = models.ForeignKey(UserAccount, related_name="receiver", on_delete=models.CASCADE)
     date_sent = models.DateField(default=date.today)
