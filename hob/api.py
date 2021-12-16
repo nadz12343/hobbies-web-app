@@ -30,7 +30,6 @@ def GET_all_UserAccount(request):
             from_date=todays_date-timedelta(days=20*365.2425)
             to_date=todays_date
         elif age=='2':
-            print("age cahnged")
             from_date=todays_date-timedelta(days=30*365.2425)
             to_date=todays_date-timedelta(days=20*365.2425)
         elif age=='3':
@@ -60,7 +59,6 @@ def GET_all_UserAccount(request):
     list_u_hob = []
     for n in current_user.get("hobbies"):
         list_u_hob.append(n.get("id"))
-    print(list_u_hob)
 
     similar_hobbies = {}
     
