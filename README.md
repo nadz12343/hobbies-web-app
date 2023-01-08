@@ -1,23 +1,3 @@
-Openshift link:
-
-https://group43-group43abc.apps.kube.eecs.qmul.ac.uk/
-
---------------------------------------------------------------
-
-Contributions:
-
-Sebastian Maliwiecki: created the Github repository for the whole group to work from. They programmed the login, register and logout views using the Django authentication framework. Created the UserAccount user model using Abstract user. Created website templates. Assisted with profile editting function. Implemented similar set of hobbies between two different users and also filtering system to filter different informationr regarding the user. Involed in deplying project to openshift
-
-Lorenzo Turco: Implemented all of the profile editable fields expect for the user hobbies.
-
-Benny Babayani: Ensuring the list of hobbies is database driven and allowing users to add new hobbies that are not listed on the database. Also, involved in the deployment of the project to Openshift.
-
-Naz Haque: Completed unit testing, assisted with profile editting and helped with friend request functionality.
-
---------------------------------------------------------------
-
-These users are only present on openshift and not the local version off the application.
-
 Users:
 
 Aiyla Powell

@@ -25,7 +25,7 @@
         {% endfor %}
 
         <button type="submit">Login</button>
-    <form> {% endcomment %}
+        </form> {% endcomment %}
 
     <div class="text-center" id="login-form">
             <form class="form-signin" style="width: 400px;" method="post">
@@ -59,6 +59,42 @@
 
                 <button class="btn btn-dark btn-lg btn-block mt-5" type="submit">Sign in</button>
                 <p class="mt-3"><a href="{% url 'register' %}">Register an account</a></p> 
+
             </form>
+
+
+            <div style = "display: flex; align-items: center; justify-content: center;">
+<!-- DEMO USER 1-->
+            <form style="display: flex; align-items: center; justify-content: center;"method="post">
+                
+                {% csrf_token %}
+
+                <label for="inputEmail" class="sr-only d-none" >Email address</label>
+                <input type="email" name="email" id="inputEmail" class="mt-1 d-none" placeholder="Email address" value="sr@gmail.com" required autofocus>
+
+                <label for="inputPassword" class="sr-only mt-3 d-none">Password</label>
+                <input type="password" name="password" id="inputPassword" class="form-control mt-1 d-none" value = "Password@123" placeholder="Password" required>
+                
+                <button class="btn btn-dark btn-lg btn-block" type="submit">Demo User 1</button>
+            </form>
+
+
+            <!-- DEMO USER 2-->
+            <form style="display: flex; align-items: center; justify-content: center;"method="post">
+                
+                {% csrf_token %}
+
+                <label for="inputEmail" class="sr-only d-none" >Email address</label>
+                <input type="email" name="email" id="inputEmail" class="mt-1 d-none" placeholder="Email address" value="eh@gmail.com" required autofocus>
+
+                <label for="inputPassword" class="sr-only mt-3 d-none">Password</label>
+                <input type="password" name="password" id="inputPassword" class="form-control mt-1 d-none" value = "Password@123" placeholder="Password" required>
+                
+                <button class="btn btn-dark btn-lg btn-block" type="submit">Demo User 2</button>
+            </form>
+
+        </div>
+
+
     </div>
 {% endblock content %}
